@@ -1,0 +1,62 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MeterNumberPickerStyle1">
+        <item name="mnp_min">0</item>
+        <item name="mnp_max">9</item>
+        <item name="mnp_textColor">@android:color/white</item>
+        <item name="mnp_textSize">50sp</item>
+        <item name="mnp_paddingHorizontal">5dp</item>
+        <item name="mnp_paddingVertical">25dp</item>
+    </style>
+
+    <style name="MeterViewStyle1">
+        <item name="mv_firstColor">@android:color/black</item>
+        <item name="mv_numberOfFirst">5</item>
+        <item name="mv_numberOfSecond">1</item>
+        <item name="mv_pickerStyle">@style/MeterNumberPickerStyle1</item>
+        <item name="mv_secondColor">@android:color/holo_red_dark</item>
+    </style>
+
+    <style name="MeterNumberPickerStyle2">
+        <item name="mnp_min">0</item>
+        <item name="mnp_max">99</item>
+        <item name="mnp_value">66</item>
+        <item name="mnp_textColor">@android:color/white</item>
+        <item name="mnp_textSize">50sp</item>
+        <item name="mnp_paddingHorizontal">10dp</item>
+        <item name="mnp_paddingVertical">25dp</item>
+    </style>
+
+    <style name="MeterViewStyle2">
+        <item name="mv_firstColor">@android:color/holo_red_dark</item>
+        <item name="mv_numberOfFirst">1</item>
+        <item name="mv_pickerStyle">@style/MeterNumberPickerStyle2</item>
+    </style>
+
+    <style name="MeterNumberPickerStyle3">
+        <item name="mnp_min">0</item>
+        <item name="mnp_max">99</item>
+        <item name="mnp_value">7</item>
+        <item name="mnp_textColor">@android:color/primary_text_light</item>
+        <item name="mnp_textSize">50sp</item>
+        <item name="mnp_paddingHorizontal">10dp</item>
+        <item name="mnp_paddingVertical">25dp</item>
+    </style>
+
+    <style name="MeterViewStyle3">
+        <item name="mv_firstColor">@android:color/holo_orange_light</item>
+        <item name="mv_numberOfFirst">2</item>
+        <item name="mv_numberOfSecond">1</item>
+        <item name="mv_pickerStyle">@style/MeterNumberPickerStyle3</item>
+        <item name="mv_secondColor">@android:color/holo_orange_dark</item>
+    </style>
+
+</resources>

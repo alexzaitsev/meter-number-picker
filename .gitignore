@@ -1,0 +1,10 @@
+.gradle
+.idea
+*.iml
+build
+local.properties
+meternumberpicker/build
+sample/build
+.DS_Store
+device-*.png
+*.li
