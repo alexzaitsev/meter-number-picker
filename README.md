@@ -1,7 +1,9 @@
 # Meter Number Picker
 The android library that provides a simple and customizable NumberPicker styled as meter. It's based on [NumberPicker](https://github.com/ShawnLin013/NumberPicker).
 
-<img src="https://raw.githubusercontent.com/alexzaitsev/meter-number-picker/master/art/screenshot.png" height="533" width="300"/>
+<p align="center">
+    <img src="https://raw.githubusercontent.com/alexzaitsev/meter-number-picker/master/art/screenshot.png" height="710" width="400"/>
+</p>
 
 ## Content
 The library contains 2 views: [MeterNumberPicker](https://github.com/alexzaitsev/meter-number-picker/blob/master/meternumberpicker/src/main/java/com/alexzaitsev/meternumberpicker/MeterNumberPicker.java) and [MeterView](https://github.com/alexzaitsev/meter-number-picker/blob/master/meternumberpicker/src/main/java/com/alexzaitsev/meternumberpicker/MeterView.java). `MeterNumberPicker` is a base block for `MeterView`. On the screenshot above whole view is the `MeterView` and a single block of it is `MeterNumberPicker`. They are pretty simple, you can easily create your own meter class based on them.
