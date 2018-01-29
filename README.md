@@ -3,6 +3,20 @@ The android library that provides a simple and customizable NumberPicker styled 
 
 ![Preview](https://github.com/alexzaitsev/meter-number-picker/blob/master/art/demo.gif)
 
+## Usage
+Make sure you've added maven central to the list of your repositories at the root `build.gradle`:
+```
+repositories {
+    mavenCentral()
+}
+```
+Then add a dependency into your module's `build.gradle`:
+```
+dependencies {
+    implementation 'com.alex-zaitsev:meternumberpicker:1.0.0'
+}
+```
+
 ## Content
 The library contains 2 views: [MeterNumberPicker](https://github.com/alexzaitsev/meter-number-picker/blob/master/meternumberpicker/src/main/java/com/alexzaitsev/meternumberpicker/MeterNumberPicker.java) and [MeterView](https://github.com/alexzaitsev/meter-number-picker/blob/master/meternumberpicker/src/main/java/com/alexzaitsev/meternumberpicker/MeterView.java). `MeterNumberPicker` is a base block for `MeterView`. On the screenshot above whole view is the `MeterView` and a single block of it is `MeterNumberPicker`. They are pretty simple, you can easily create your own meter class based on them.
 
