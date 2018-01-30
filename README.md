@@ -1,6 +1,8 @@
 # Meter Number Picker
 The android library that provides a simple and customizable NumberPicker styled as meter. It's based on [NumberPicker](https://github.com/ShawnLin013/NumberPicker).
 
+[![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-Meter%20Number%20Picker-green.svg?style=flat)](https://android-arsenal.com/details/1/6723)
+
 ![Preview](https://github.com/alexzaitsev/meter-number-picker/blob/master/art/demo.gif)
 
 ## Usage
