@@ -1,7 +1,7 @@
 # Meter Number Picker
 The android library that provides a simple and customizable NumberPicker styled as meter. It's based on [NumberPicker](https://github.com/ShawnLin013/NumberPicker).
 
-![Preview](https://github.com/alexzaitsev/meter-number-picker/blob/master/art/demo.gif)
+![Preview](https://github.com/alexzaitsev/meter-number-picker/blob/master/art/demo-framed.gif)
 
 ## Usage
 Make sure you've added maven central to the list of your repositories at the root `build.gradle`:
