@@ -80,6 +80,7 @@ You may also want to check the [sample](https://github.com/alexzaitsev/meter-num
 |mv_firstColor|Background color for the first-placed blocks.|
 |mv_secondColor|Background color for the second-placed blocks.|
 |mv_pickerStyle|The style for the `MeterNumberPicker`.|
+|mv_enabled|Defines whether view reacts on clicks.|
 
 ## License
 [MeterNumberPicker](https://github.com/alexzaitsev/meter-number-picker) is under [Apache 2.0](https://github.com/alexzaitsev/meter-number-picker/blob/master/LICENSE).
