@@ -72,6 +72,10 @@ public class MeterView extends LinearLayout {
         return pickerStyleId == -1 ? new MeterNumberPicker(context) : new MeterNumberPicker(context, pickerStyleId);
     }
 
+    /**
+     * Returns current value of the widget. Works only if "mnp_max" is not bigger then 9.
+     * For other cases you have to extend this view for now.
+     */
     public int getValue() {
         int result = 0;
         int koeff = getChildCount();
@@ -80,5 +84,22 @@ public class MeterView extends LinearLayout {
             result += picker.getValue() * Math.pow(10, --koeff);
         }
         return result;
+    }
+
+    /**
+     * Sets current value to the widget. Works only if "mnp_max" is not bigger then 9.
+     * For other cases you have to extend this view for now.
+     */
+    public void setValue(int value) {
+        int koeff = getChildCount();
+        for (int i = 0; i < getChildCount(); i++) {
+            MeterNumberPicker picker = (MeterNumberPicker) getChildAt(i);
+            int number = (int) (value / Math.pow(10, --koeff));
+            if (i == 0 && number > 9) {
+                throw new IllegalArgumentException("Number of digits cannot be greater then pickers number");
+            }
+            value -= number * Math.pow(10, koeff);
+            picker.setValue(number);
+        }
     }
 }
