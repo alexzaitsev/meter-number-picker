@@ -10,7 +10,7 @@
         <attr name="mnp_typeface" format="string" />
         <attr name="mnp_minWidth" format="dimension" />
         <attr name="mnp_minHeight" format="dimension" />
-        <attr name="mnp_paddingHorizontal" format="dimension"/>
+        <attr name="mnp_paddingHorizontal" format="dimension" />
         <attr name="mnp_paddingVertical" format="dimension" />
     </declare-styleable>
 
@@ -20,6 +20,7 @@
         <attr name="mv_firstColor" format="color" />
         <attr name="mv_secondColor" format="color" />
         <attr name="mv_pickerStyle" format="reference" />
+        <attr name="mv_enabled" format="boolean" />
     </declare-styleable>
 
 </resources>

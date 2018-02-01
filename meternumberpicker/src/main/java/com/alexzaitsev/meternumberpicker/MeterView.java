@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
 public class MeterView extends LinearLayout {
@@ -15,11 +16,13 @@ public class MeterView extends LinearLayout {
     private static final int DEFAULT_NUMBER_OF_RED = 0;
     private static final int DEFAULT_BLACK_COLOR = 0xFF000000;
     private static final int DEFAULT_RED_COLOR = 0xFFCC0000;
+    private static final boolean DEFAULT_ENABLED = true;
 
     private int numberOfFirst = DEFAULT_NUMBER_OF_BLACK;
     private int numberOfSecond = DEFAULT_NUMBER_OF_RED;
     private int firstColor = DEFAULT_BLACK_COLOR;
     private int secondColor = DEFAULT_RED_COLOR;
+    private boolean enabled = DEFAULT_ENABLED;
 
     private int pickerStyleId = -1;
 
@@ -53,6 +56,7 @@ public class MeterView extends LinearLayout {
             firstColor = typedArray.getColor(R.styleable.MeterView_mv_firstColor, firstColor);
             secondColor = typedArray.getColor(R.styleable.MeterView_mv_secondColor, secondColor);
             pickerStyleId = typedArray.getResourceId(R.styleable.MeterView_mv_pickerStyle, pickerStyleId);
+            enabled = typedArray.getBoolean(R.styleable.MeterView_mv_enabled, enabled);
             typedArray.recycle();
         }
         populate(context);
@@ -62,6 +66,7 @@ public class MeterView extends LinearLayout {
         for (int i = 0; i < numberOfFirst + numberOfSecond; i++) {
             MeterNumberPicker meterNumberPicker = createPicker(context);
             meterNumberPicker.setBackgroundColor(i < numberOfFirst ? firstColor : secondColor);
+            meterNumberPicker.setEnabled(isEnabled());
             LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             lp.weight = 1;
             addView(meterNumberPicker, lp);
@@ -70,6 +75,21 @@ public class MeterView extends LinearLayout {
 
     private MeterNumberPicker createPicker(Context context) {
         return pickerStyleId == -1 ? new MeterNumberPicker(context) : new MeterNumberPicker(context, pickerStyleId);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return !enabled || super.onInterceptTouchEvent(ev);
     }
 
     /**
