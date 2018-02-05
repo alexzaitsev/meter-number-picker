@@ -18,7 +18,9 @@ import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
 
@@ -38,7 +40,11 @@ public class MeterNumberPicker extends View {
      * this is separate thing)
      */
     private static final int DEFAULT_PADDING = 2;
-    private static final int SELECTOR_ADJUSTMENT_DURATION_MILLIS = 800;
+    private static final int ADJUSTMENT_DURATION_MILLIS = 800;
+    /**
+     * The coefficient by which to adjust (divide) the max fling velocity.
+     */
+    private static final int MAX_FLING_VELOCITY_ADJUSTMENT = 6;
 
     private int minHeight = DEFAULT_MIN_HEIGHT_DP;
     private int minWidth = DEFAULT_MIN_WIDTH_DP;
@@ -82,9 +88,25 @@ public class MeterNumberPicker extends View {
      */
     private Scroller adjustScroller;
     /**
+     * The {@link Scroller} responsible for flinging the selector
+     */
+    private Scroller flingScroller;
+    /**
      * The last Y position of adjustment scroller
      */
     private int scrollerLastY = 0;
+    /**
+     * Determines speed during touch scrolling
+     */
+    private VelocityTracker velocityTracker;
+    /**
+     * @see ViewConfiguration#getScaledMinimumFlingVelocity()
+     */
+    private int minimumFlingVelocity;
+    /**
+     * @see ViewConfiguration#getScaledMaximumFlingVelocity()
+     */
+    private int maximumFlingVelocity;
 
     public MeterNumberPicker(Context context) {
         super(context);
@@ -158,6 +180,11 @@ public class MeterNumberPicker extends View {
         setMaxValue(maxValue);
         setMinValue(minValue);
 
+        ViewConfiguration configuration = ViewConfiguration.get(context);
+        minimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
+        maximumFlingVelocity = configuration.getScaledMaximumFlingVelocity() / MAX_FLING_VELOCITY_ADJUSTMENT;
+
+        flingScroller = new Scroller(context, null, true);
         adjustScroller = new Scroller(context, new DecelerateInterpolator(2.5f));
     }
 
@@ -236,13 +263,14 @@ public class MeterNumberPicker extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        int measuredHeight = getMeasuredHeight();
 
         float x = (getRight() - getLeft()) / 2;
         float y = (getBottom() - getTop()) / 2 + textHeight / 2;
 
         int currentValueStart = (int) (y + currentScrollOffset);
-        int prevValueStart = currentValueStart - getMeasuredHeight();
-        int nextValueStart = currentValueStart + getMeasuredHeight();
+        int prevValueStart = currentValueStart - measuredHeight;
+        int nextValueStart = currentValueStart + measuredHeight;
 
         canvas.drawText(getValue(currentValueOffset + 1) + "", x, prevValueStart, textPaint);
         canvas.drawText(getValue(currentValueOffset) + "", x, currentValueStart, textPaint);
@@ -258,10 +286,17 @@ public class MeterNumberPicker extends View {
         if (!isEnabled()) {
             return false;
         }
+        if (velocityTracker == null) {
+            velocityTracker = VelocityTracker.obtain();
+        }
+        velocityTracker.addMovement(event);
 
         int action = event.getAction() & MotionEvent.ACTION_MASK;
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
+                if (!flingScroller.isFinished()) {
+                    flingScroller.forceFinished(true);
+                }
                 if (!adjustScroller.isFinished()) {
                     adjustScroller.forceFinished(true);
                 }
@@ -277,29 +312,21 @@ public class MeterNumberPicker extends View {
             }
             break;
             case MotionEvent.ACTION_UP: {
-                int rawScrollOffset = (int) (lastDownOrMoveEventY - lastDownEventY);
-                int measuredHeight = getMeasuredHeight();
-                int adjustedValueOffset = calculateAdjustedValueOffset(rawScrollOffset, measuredHeight);
-                calculateCurrentOffsets(rawScrollOffset, measuredHeight);
-                value = getValue(adjustedValueOffset);
-
-                scrollerLastY = currentScrollOffset;
-                int scrollYFrom;
-                if (adjustedValueOffset == currentValueOffset) {
-                    // we're scrolling the same number as on the screen
-                    scrollYFrom = currentScrollOffset;
+                velocityTracker.computeCurrentVelocity(1000, maximumFlingVelocity);
+                int initialVelocity = (int) velocityTracker.getYVelocity();
+                if (Math.abs(initialVelocity) > minimumFlingVelocity) {
+                    fling(initialVelocity);
                 } else {
-                    // it's needed to scroll to the next number
-                    if (currentScrollOffset < 0) {
-                        scrollYFrom = currentScrollOffset + measuredHeight;
-                    } else {
-                        scrollYFrom = currentScrollOffset - measuredHeight;
-                    }
+                    int rawScrollOffset = (int) (lastDownOrMoveEventY - lastDownEventY);
+                    int measuredHeight = getMeasuredHeight();
+                    int adjustedValueOffset = calculateAdjustedValueOffset(rawScrollOffset, measuredHeight);
+                    calculateCurrentOffsets(rawScrollOffset, measuredHeight);
+                    value = getValue(adjustedValueOffset);
+                    adjust(measuredHeight, adjustedValueOffset);
                 }
-                adjustScroller.startScroll(0, scrollYFrom, 0, -scrollYFrom, SELECTOR_ADJUSTMENT_DURATION_MILLIS);
-                currentValueOffset = 0;
-
                 invalidate();
+                velocityTracker.recycle();
+                velocityTracker = null;
             }
             break;
         }
@@ -308,14 +335,37 @@ public class MeterNumberPicker extends View {
 
     @Override
     public void computeScroll() {
-        if (adjustScroller.isFinished()) {
-            return;
+        Scroller scroller = flingScroller;
+        if (scroller.isFinished()) {
+            scroller = adjustScroller;
+            if (scroller.isFinished()) {
+                return;
+            }
         }
-        adjustScroller.computeScrollOffset();
-        int currentScrollerY = adjustScroller.getCurrY();
+        scroller.computeScrollOffset();
+        int currentScrollerY = scroller.getCurrY();
         int diffScrollY = scrollerLastY - currentScrollerY;
         currentScrollOffset -= diffScrollY;
         scrollerLastY = currentScrollerY;
+
+        if (adjustScroller.isFinished()) {
+            if (flingScroller.isFinished()) {
+                if (currentScrollOffset != 0) {
+                    int measuredHeight = getMeasuredHeight();
+                    int adjustedValueOffset = calculateAdjustedValueOffset(measuredHeight);
+                    value = getValue(adjustedValueOffset);
+                    adjust(measuredHeight, adjustedValueOffset);
+                }
+            } else {
+                int newScrollOffset = currentScrollOffset % getMeasuredHeight();
+                if (newScrollOffset != currentScrollOffset) {
+                    int numberOfValuesScrolled = (currentScrollOffset - newScrollOffset) / getMeasuredHeight();
+                    currentValueOffset += numberOfValuesScrolled;
+                    currentScrollOffset = newScrollOffset;
+                }
+            }
+        }
+
         invalidate();
     }
 
@@ -328,6 +378,38 @@ public class MeterNumberPicker extends View {
     private int calculateAdjustedValueOffset(int rawScrollOffset, int measuredHeight) {
         double currentValueOffset = (double) rawScrollOffset / (double) measuredHeight;
         return (int) (currentValueOffset + 0.5d * (currentValueOffset < 0 ? -1d : 1d));
+    }
+
+    /**
+     * Calculating adjusted value offset based only on the current scroll offset
+     *
+     * @return currentValueOffset if no changes should be applied, currentValueOffset + 1 or currentValueOffset - 1
+     */
+    private int calculateAdjustedValueOffset(int measuredHeight) {
+        return Math.abs(currentScrollOffset) < measuredHeight / 2 ?
+                currentValueOffset :
+                currentValueOffset + (currentScrollOffset < 0 ? -1 : 1);
+    }
+
+    private void adjust(int measuredHeight, int adjustedValueOffset) {
+        if (adjustedValueOffset != currentValueOffset) {
+            if (currentScrollOffset < 0) {
+                currentScrollOffset += measuredHeight;
+            } else {
+                currentScrollOffset -= measuredHeight;
+            }
+        }
+        scrollerLastY = currentScrollOffset;
+        currentValueOffset = 0;
+        adjustScroller.startScroll(0, currentScrollOffset, 0, -currentScrollOffset, ADJUSTMENT_DURATION_MILLIS);
+    }
+
+    private void fling(int velocity) {
+        if (velocity > 0) {
+            flingScroller.fling(0, scrollerLastY = 0, 0, velocity, 0, 0, 0, Integer.MAX_VALUE);
+        } else {
+            flingScroller.fling(0, scrollerLastY = Integer.MAX_VALUE, 0, velocity, 0, 0, 0, Integer.MAX_VALUE);
+        }
     }
 
     // =============================================================================================
