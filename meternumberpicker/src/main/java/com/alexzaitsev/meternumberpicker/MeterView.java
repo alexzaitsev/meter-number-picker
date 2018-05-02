@@ -122,4 +122,11 @@ public class MeterView extends LinearLayout {
             picker.setValue(number);
         }
     }
+
+    public void setNumbersOf(int numberOfFirst, int numberOfSecond) {
+        this.numberOfFirst = numberOfFirst;
+        this.numberOfSecond = numberOfSecond;
+        removeAllViews();
+        init(getContext(), null);
+    }
 }
