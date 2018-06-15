@@ -15,7 +15,7 @@ repositories {
 Then add a dependency into your module's `build.gradle`:
 ```
 dependencies {
-    implementation 'com.alex-zaitsev:meternumberpicker:1.0.3'
+    implementation 'com.alex-zaitsev:meternumberpicker:1.0.4'
 }
 ```
 
