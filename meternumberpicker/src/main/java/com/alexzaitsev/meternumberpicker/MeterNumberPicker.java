@@ -302,6 +302,9 @@ public class MeterNumberPicker extends View {
                 }
 
                 lastDownEventY = event.getY();
+
+                // Disallow ScrollView to intercept touch events.
+                this.getParent().requestDisallowInterceptTouchEvent(true);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -327,6 +330,9 @@ public class MeterNumberPicker extends View {
                 invalidate();
                 velocityTracker.recycle();
                 velocityTracker = null;
+
+                // Allow ScrollView to intercept touch events.
+                this.getParent().requestDisallowInterceptTouchEvent(false);
             }
             break;
         }
