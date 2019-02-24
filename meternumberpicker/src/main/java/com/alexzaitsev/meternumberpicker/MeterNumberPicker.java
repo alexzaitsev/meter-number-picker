@@ -423,13 +423,14 @@ public class MeterNumberPicker extends View {
     // =============================================================================================
 
     private int getValue(int offset) {
-        offset %= maxValue - minValue;
-        if (value + offset < minValue) {
-            return maxValue - (Math.abs(offset) - (value - minValue)) + 1;
-        } else if (value + offset > maxValue) {
-            return minValue + offset - (maxValue - value) - 1;
+	int distance = maxValue-minValue+1;
+	int result = value + offset % distance;
+        if (result < minValue) {
+            return result + distance;
+        } else if (result > maxValue) {
+            return result - distance;
         }
-        return value + offset;
+        return result;
     }
 
     private String formatNumberWithLocale(int value) {
