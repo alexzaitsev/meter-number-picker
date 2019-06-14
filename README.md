@@ -53,7 +53,7 @@ Almost there! Now create your view and apply the style:
     android:layout_height="wrap_content"/>
 ```
 
-You can use `MeterNumberPicke` directly without `MeterView` wrapper. Look at the [MeterView](https://github.com/alexzaitsev/meter-number-picker/blob/master/meternumberpicker/src/main/java/com/alexzaitsev/meternumberpicker/MeterView.java) sources to catch more details.  
+You can use `MeterNumberPicker` directly without `MeterView` wrapper. Look at the [MeterView](https://github.com/alexzaitsev/meter-number-picker/blob/master/meternumberpicker/src/main/java/com/alexzaitsev/meternumberpicker/MeterView.java) sources to catch more details.  
 You may also want to check the [sample](https://github.com/alexzaitsev/meter-number-picker/tree/master/sample).
 
 ## Attributes
