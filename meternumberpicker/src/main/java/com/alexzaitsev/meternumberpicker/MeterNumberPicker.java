@@ -35,6 +35,7 @@ public class MeterNumberPicker extends View {
     private static final int DEFAULT_VALUE = 0;
     private static final int DEFAULT_TEXT_COLOR = 0xFF000000;
     private static final float DEFAULT_TEXT_SIZE_SP = 25f;
+    private static final int DEFAULT_ORDER = 1;
     /**
      * The default internal padding for the text (do not mix up with view paddings -
      * this is separate thing)
@@ -54,6 +55,7 @@ public class MeterNumberPicker extends View {
     private Paint textPaint;
     private int textColor = DEFAULT_TEXT_COLOR;
     private float textSize = DEFAULT_TEXT_SIZE_SP;
+    private int order = DEFAULT_ORDER;
     private Typeface typeface;
     /**
      * Current Y scroll offset
@@ -159,6 +161,7 @@ public class MeterNumberPicker extends View {
             value = attributesArray.getInt(R.styleable.MeterNumberPicker_mnp_value, value);
             textColor = attributesArray.getColor(R.styleable.MeterNumberPicker_mnp_textColor, textColor);
             textSize = attributesArray.getDimensionPixelSize(R.styleable.MeterNumberPicker_mnp_textSize, (int) spToPx(textSize));
+            order = attributesArray.getInt(R.styleable.MeterNumberPicker_mnp_order, order);
             typeface = Typeface.create(attributesArray.getString(R.styleable.MeterNumberPicker_mnp_typeface), Typeface.NORMAL);
             minWidth = attributesArray.getDimensionPixelSize(R.styleable.MeterNumberPicker_mnp_minWidth, (int) dpToPx(minWidth));
             minHeight = attributesArray.getDimensionPixelSize(R.styleable.MeterNumberPicker_mnp_minHeight, (int) dpToPx(minHeight));
@@ -423,14 +426,22 @@ public class MeterNumberPicker extends View {
     // =============================================================================================
 
     private int getValue(int offset) {
-	int distance = maxValue-minValue+1;
-	int result = value + offset % distance;
+	      int distance = maxValue-minValue+1;
+	      int result = getResult(offset, distance);
         if (result < minValue) {
             return result + distance;
         } else if (result > maxValue) {
             return result - distance;
         }
         return result;
+    }
+
+    private int getResult(int offset, int distance) {
+        if (order == 0) {
+            return value - offset % distance;
+        } else {
+            return value + offset % distance;
+        }
     }
 
     private String formatNumberWithLocale(int value) {
