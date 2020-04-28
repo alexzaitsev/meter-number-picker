@@ -71,6 +71,7 @@ You may also want to check the [sample](https://github.com/alexzaitsev/meter-num
 |mnp_minHeight|The min height of this widget.|
 |mnp_paddingHorizontal|Internal horizontal padding of this widget (left/right).|
 |mnp_paddingVertical|Internal vertical padding of this widget (top/bottom).|
+|mnp_order|The order of the numbers. Default is descending. (ascending/descending).|
 
 #### MeterView
 |attribute name|attribute description|

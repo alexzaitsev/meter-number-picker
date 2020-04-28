@@ -12,6 +12,10 @@
         <attr name="mnp_minHeight" format="dimension" />
         <attr name="mnp_paddingHorizontal" format="dimension" />
         <attr name="mnp_paddingVertical" format="dimension" />
+        <attr name="mnp_order" format="enum">
+            <enum name="ascending" value="0" />
+            <enum name="descending" value="1" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="MeterView">
